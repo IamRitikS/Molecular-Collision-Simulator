@@ -8,6 +8,9 @@ However, in this simulator, if you hover your mouse over a particular molecule, 
 
 *Like challenges? Try to freeze all the molecules as fast as you can.*  
 
+
+## Link to see it in working mode - https://iamritiks.github.io/Molecular-Collision-Simulator/
+
 ## Technologies used
 #### JavaScript
   JavaScript canvas is used to draw the molecules on the screen.
