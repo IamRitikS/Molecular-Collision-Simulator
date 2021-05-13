@@ -10,7 +10,7 @@ However, in this simulator, if you hover your mouse over a particular molecule, 
   JavaScript canvas is used to draw the molecules on the screen.
 #### Pythagorean Theorem
   Pythagorean theorem is used to detect when two molecules are colliding. An image on how this works from a higher level of understanding is linked below for reference.
-  ![Pythagorean Theorem for Collision Detection](/img/Pythagorean Theorem.png)
+  <img src="/img/Pythagorean Theorem.png" alt="Pythagorean Theorem for Collision Detection">
 #### Two-dimensional Collision Resolution
   [Two-dimensional collision resolution](https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional_collision_with_two_moving_objects) formula is used to resolve when a collision happens between two molecules. An image on how this works from a higher level of understanding is linked below for reference.
-  ![Two-dimensional Collision Resolution](/img/Two Dimensional Collision with Two Moving Objects.jpg)
+  <img src="/img/Two Dimensional Collision with Two Moving Objects.jpg" alt="Two-dimensional Collision Resolution">
