@@ -7,9 +7,25 @@
 
 </head>
 <body>
-	
+		<form id="userInput">
+			<label for="minRadius">Minimum radius</label>
+			<input id="minRadius" value="10">
+			</br>
+			<label for="maxRadius">Maximum radius</label>
+			<input id="maxRadius" value="15">
+			</br>
+			<label for="minNumOfMolecules">Minimum number of molecules</label>
+			<input id="minNumOfMolecules" value="100">
+			</br>
+			<label for="maxNumOfMolecules">Maximum number of molecules</label>
+			<input id="maxNumOfMolecules" value="150">
+			</br>
+			<label for="maxVelocity">Maximum velocity</label>
+			<input id="maxVelocity" value="0.5">
+			</br>
+			<span onclick="startAnimation()" id="startAnimation">Start</span>
+		</form>
 	<canvas>
-		
 	</canvas>
 		<script type="text/javascript" src="canvas.js"></script>
 		
@@ -17,16 +33,51 @@
 </html>
 
 <style type="text/css">
+	span
+	{
+		background: orange;
+		padding: 0.5em;
+		border-radius: 0.5em;
+		cursor: pointer;
+		float: right;
+		margin-right: 3em;
+	}
+	form
+	{
+		background: #E4E4E4;
+		display: inline-block;
+		padding: 1em;
+		width: 100%;
+	}
+	input
+	{
+		width: 6em;
+		padding: 0.5em 1em;
+		border-style: none;
+		outline: none;
+		margin-top: 1em;
+		border-radius: 0.5em;
+	}
 	body
 	{
 		margin: 0;
 		padding: 0;
 		border: 0;
-		overflow: hidden;
+		overflow-x: hidden;
 		display: block;
 	}
 	canvas
 	{
+		margin-bottom: -2em;
 		background: grey;
+	}
+	body
+	{
+		-ms-overflow-style: none;  /* Internet Explorer 10+ */
+		scrollbar-width: none;  /* Firefox */
+	}
+	body::-webkit-scrollbar
+	{ 
+		display: none;  /* Safari and Chrome */
 	}
 </style>
