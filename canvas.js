@@ -3,7 +3,6 @@ var c = canvas.getContext('2d');
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
-let factor = Math.abs(innerHeight-innerWidth)
 
 // Variables
 var mouse =
@@ -19,6 +18,12 @@ var colors =
 	'#FFF6E5',
 	'#FF7F66'
 ];
+
+var minRadius = 10;
+var maxRadius = 15;
+var minNumOfMolecules = 100;
+var maxNumOfMolecules = 150;
+var maxVelocity = 0.5;
 
 // Event Listeners
 addEventListener("mousemove", function(event)
@@ -72,24 +77,24 @@ function rotate(velocity, angle)
     return rotatedVelocities;
 }
 
-function resolveCollision(particle, otherParticle)
+function resolveCollision(molecule, otherMolecule)
 {
-    const xVelocityDiff = particle.velocity.x - otherParticle.velocity.x;
-    const yVelocityDiff = particle.velocity.y - otherParticle.velocity.y;
+    const xVelocityDiff = molecule.velocity.x - otherMolecule.velocity.x;
+    const yVelocityDiff = molecule.velocity.y - otherMolecule.velocity.y;
 
-    const xDist = otherParticle.x - particle.x;
-    const yDist = otherParticle.y - particle.y;
+    const xDist = otherMolecule.x - molecule.x;
+    const yDist = otherMolecule.y - molecule.y;
 
     if (xVelocityDiff * xDist + yVelocityDiff * yDist >= 0)
     {
 
-        const angle = -Math.atan2(otherParticle.y - particle.y, otherParticle.x - particle.x);
+        const angle = -Math.atan2(otherMolecule.y - molecule.y, otherMolecule.x - molecule.x);
 
-        const m1 = particle.mass;
-        const m2 = otherParticle.mass;
+        const m1 = molecule.mass;
+        const m2 = otherMolecule.mass;
 
-        const u1 = rotate(particle.velocity, angle);
-        const u2 = rotate(otherParticle.velocity, angle);
+        const u1 = rotate(molecule.velocity, angle);
+        const u2 = rotate(otherMolecule.velocity, angle);
 
         const v1 = { x: u1.x * (m1 - m2) / (m1 + m2) + u2.x * 2 * m2 / (m1 + m2), y: u1.y };
         const v2 = { x: u2.x * (m1 - m2) / (m1 + m2) + u1.x * 2 * m2 / (m1 + m2), y: u2.y };
@@ -97,60 +102,60 @@ function resolveCollision(particle, otherParticle)
         const vFinal1 = rotate(v1, -angle);
         const vFinal2 = rotate(v2, -angle);
 
-        particle.velocity.x = vFinal1.x;
-        particle.velocity.y = vFinal1.y;
+        molecule.velocity.x = vFinal1.x;
+        molecule.velocity.y = vFinal1.y;
 
-        otherParticle.velocity.x = vFinal2.x;
-        otherParticle.velocity.y = vFinal2.y;
+        otherMolecule.velocity.x = vFinal2.x;
+        otherMolecule.velocity.y = vFinal2.y;
 
-		if(particle.color == '#262326')
+		if(molecule.color == '#262326')
 		{
-			particle.color = randomColor(colors);
+			molecule.color = randomColor(colors);
 		}
-		if(otherParticle.color == '#262326')
+		if(otherMolecule.color == '#262326')
 		{
-			otherParticle.color = randomColor(colors);
+			otherMolecule.color = randomColor(colors);
 		}
     }
 }
 
-function Particle(x, y, radius, color)
+function molecule(x, y, radius, color)
 {
 	this.x = x;
 	this.y = y;
 	this.velocity = 
 	{
-		x: randomIntFromRange(-0.5, 0.5),
-		y: randomIntFromRange(-0.5, 0.5),
+		x: randomIntFromRange(-maxVelocity, maxVelocity),
+		y: randomIntFromRange(-maxVelocity, maxVelocity),
 	}
-	if(this.velocity.x == 0)
+	while(this.velocity.x == 0)
 	{
-		this.velocity.x = randomIntFromRange(-0.5, 0.5)
+		this.velocity.x = randomIntFromRange(-maxVelocity, maxVelocity)
 	}
-	if(this.velocity.y == 0)
+	while(this.velocity.y == 0)
 	{
-		this.velocity.y = randomIntFromRange(-0.5, 0.5)
+		this.velocity.y = randomIntFromRange(-maxVelocity, maxVelocity)
 	}
 	this.radius = radius;
 	this.color = color;
 	this.mass = 1;
 
 
-	this.update = function(particles)
+	this.update = function(molecules)
 	{
 		this.draw();
 
-		for(let i = 0; i < particles.length; i++)
+		for(let i = 0; i < molecules.length; i++)
 		{
-			if(this === particles[i])
+			if(this === molecules[i])
 			{
 				continue;
 			}
 			else
 			{
-				if(distance(this.x, this.y, particles[i].x, particles[i].y) - this.radius * 2 <= 0)
+				if(distance(this.x, this.y, molecules[i].x, molecules[i].y) - this.radius * 2 <= 0)
 				{
-					resolveCollision(this, particles[i]);
+					resolveCollision(this, molecules[i]);
 				}
 			}
 		}
@@ -174,9 +179,9 @@ function Particle(x, y, radius, color)
 		this.y += this.velocity.y;
 
 		let flag = 'true';
-		for(let i = 0; i < particles.length; i++)
+		for(let i = 0; i < molecules.length; i++)
 		{
-			if(particles[i].velocity.x != 0 || particles[i].velocity.y != 0)
+			if(molecules[i].velocity.x != 0 || molecules[i].velocity.y != 0)
 			{
 				flag = 'false';
 				break;
@@ -184,7 +189,7 @@ function Particle(x, y, radius, color)
 		}
 		if(flag == 'true')
 		{
-			win();
+			// win();
 		}
 	};
 
@@ -199,28 +204,31 @@ function Particle(x, y, radius, color)
 }
 
 //Driver
-let particles;
-let particleNumber = randomIntFromRange(100, 150);
+let molecules;
 let t0;
 let t1;
+let MoleculeNumber = randomIntFromRange(minNumOfMolecules, maxNumOfMolecules);
+
 function init()
 {
+	MoleculeNumber = randomIntFromRange(minNumOfMolecules, maxNumOfMolecules);
+	console.log(MoleculeNumber);
 	t0 = performance.now();
 
-	particles = [];
+	molecules = [];
 
-	for(let i = 0; i < particleNumber; i++)
+	for(let i = 0; i < MoleculeNumber; i++)
 	{
-		const radius = randomIntFromRange(10, 14);
+		const radius = randomIntFromRange(minRadius, maxRadius);
 		let x = randomIntFromRange(radius, canvas.width-radius);
 		let y = randomIntFromRange(radius, canvas.height-radius);
 		const color = randomColor(colors);
 
 		if(i !== 0)
 		{
-			for(let j = 0; j < particles.length; j++)
+			for(let j = 0; j < molecules.length; j++)
 			{
-				if(distance(x, y, particles[j].x, particles[j].y) - radius * 2 <= 0)
+				if(distance(x, y, molecules[j].x, molecules[j].y) - radius * 2 <= 0)
 				{
 					x = randomIntFromRange(radius, canvas.width-radius);
 					y = randomIntFromRange(radius, canvas.height-radius);
@@ -229,7 +237,7 @@ function init()
 			}
 		}
 
-		particles.push(new Particle(x, y, radius, color));
+		molecules.push(new molecule(x, y, radius, color));
 	}
 }
 
@@ -239,14 +247,32 @@ function animate()
 
 	c.clearRect(0, 0, canvas.width, canvas.height);
 
-	particles.forEach(particle => {
-		particle.update(particles);
+	molecules.forEach(molecule => {
+		molecule.update(molecules);
 	});
 }
 
-//Start
+//Initializing Variables
 mouse.x = -30;
 mouse.y = -30;
-console.log(innerHeight, innerWidth, factor)
-init();
-animate();
+
+function startAnimation()
+{
+	canvas.scrollIntoView();
+
+	minRadius = parseInt(document.getElementById('minRadius').value,10);
+	maxRadius = parseInt(document.getElementById('maxRadius').value,10);
+	minNumOfMolecules = parseInt(document.getElementById('minNumOfMolecules').value,10);
+	maxNumOfMolecules = parseInt(document.getElementById('maxNumOfMolecules').value,10);
+	maxVelocity = parseFloat(document.getElementById('maxVelocity').value,10);
+	
+	console.log(minRadius);
+	console.log(maxRadius);
+	console.log(minNumOfMolecules);
+	console.log(maxNumOfMolecules);
+	console.log(maxVelocity);
+
+
+	init();
+	animate();
+}
